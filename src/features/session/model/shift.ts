@@ -6,7 +6,7 @@ import { initialVehicles } from "../../fleet";
 export function createShift(): Shift {
   const flights = initialFlights();
   return {
-    version: 1,
+    version: 2,
     time: 0,
     paused: false,
     speed: 1,

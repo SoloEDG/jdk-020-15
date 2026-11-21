@@ -1,4 +1,4 @@
-import type { ServiceKind, Shift } from "../shared/types";
+import type { Shift } from "../shared/types";
 import { clockLabel } from "../shared/document";
 import { flightReady, departFlight, statusLabels } from "../features/flights";
 import { StandPicker } from "../features/apron";
@@ -9,13 +9,15 @@ export function Inspector({
   onChange,
   onStand,
   onAssign,
-  onDispatch,
+  onEnqueue,
+  onRetarget,
 }: {
   state: Shift;
   onChange: (s: Shift) => void;
   onStand: (id: string) => void;
   onAssign: (id: string) => void;
-  onDispatch: (k: ServiceKind, v: string) => void;
+  onEnqueue: (serviceId: string, vehicleId: string) => void;
+  onRetarget: (vehicleId: string, serviceId: string) => void;
 }) {
   const f = state.flights.find((x) => x.id === state.selectedFlightId)!;
   return (
@@ -58,14 +60,16 @@ export function Inspector({
               state.services.filter(
                 (t) =>
                   t.flightId === f.id &&
-                  (t.status === "travel" || t.status === "working"),
+                  (t.status === "travel" ||
+                    t.status === "waiting" ||
+                    t.status === "working"),
               ).length
             }{" "}
             / 2 占用
           </b>
         </div>
       )}
-      <ServicePanel state={state} onDispatch={onDispatch} />
+      <ServicePanel state={state} onEnqueue={onEnqueue} onRetarget={onRetarget} />
       <button
         className="primary depart-button"
         data-testid="depart"

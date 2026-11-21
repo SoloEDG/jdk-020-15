@@ -12,6 +12,7 @@ export function useSimulation() {
         elapsed = Math.min((now - previous) / 1000, 1);
       previous = now;
       setState((s) => {
+        // 暂停时完全短路：队列顺序、在途目标与作业归属不会产生任何分叉
         if (s.paused) return s;
         const dt = elapsed * s.speed;
         return advanceServices(advanceFleet(advanceClock(s, dt), dt), dt);

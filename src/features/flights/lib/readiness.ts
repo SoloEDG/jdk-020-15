@@ -1,7 +1,10 @@
 import type { Flight, Shift } from "../../../shared/types";
 export function flightReady(state: Shift, id: string): boolean {
   const tasks = state.services.filter((t) => t.flightId === id);
-  return tasks.length === 3 && tasks.every((t) => t.status === "done");
+  if (tasks.length !== 3) return false;
+  // 中止的任务必须重新派遣并完成后才能离港
+  if (tasks.some((t) => t.status === "aborted")) return false;
+  return tasks.every((t) => t.status === "done");
 }
 export function turnaroundProgress(state: Shift, id: string): number {
   const tasks = state.services.filter((t) => t.flightId === id);

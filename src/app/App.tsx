@@ -1,8 +1,17 @@
 import { useState } from "react";
 import { FlightBoard, assignStand, selectFlight } from "../features/flights";
 import { ApronMap, selectStand } from "../features/apron";
-import { FleetPanel, selectVehicle } from "../features/fleet";
-import { dispatchService } from "../features/services";
+import {
+  FleetPanel,
+  selectVehicle,
+  enqueueTask,
+  dequeueTask,
+  reorderQueue,
+  clearQueue,
+  setWaitCap,
+  setSkipPolicy,
+  retargetActive,
+} from "../features/fleet";
 import {
   SessionBar,
   ScoreStrip,
@@ -74,6 +83,15 @@ export function App() {
             <FleetPanel
               state={state}
               onSelect={(id) => setState((s) => selectVehicle(s, id))}
+              onDequeue={(vid, sid) =>
+                setState((s) => dequeueTask(s, vid, sid))
+              }
+              onReorder={(vid, sid, to) =>
+                setState((s) => reorderQueue(s, vid, sid, to))
+              }
+              onClear={(vid) => setState((s) => clearQueue(s, vid))}
+              onWaitCap={(vid, cap) => setState((s) => setWaitCap(s, vid, cap))}
+              onPolicy={(vid, p) => setState((s) => setSkipPolicy(s, vid, p))}
             />
           </div>
           <Inspector
@@ -83,14 +101,17 @@ export function App() {
             onAssign={(id) =>
               setState((s) => assignStand(s, s.selectedFlightId, id))
             }
-            onDispatch={(kind, id) =>
-              setState((s) => dispatchService(s, s.selectedFlightId, kind, id))
+            onEnqueue={(sid, vid) => setState((s) => enqueueTask(s, sid, vid))}
+            onRetarget={(vid, sid) =>
+              setState((s) => retargetActive(s, vid, sid))
             }
           />
         </div>
         <footer>
           <span>APRON 07 · 地面有序，天空自由。</span>
-          <span>操作提示：选择航班 → 分配机位 → 派遣车辆 → 批准离港</span>
+          <span>
+            操作提示：分配机位 → 车辆排入连续任务 → 完工直连下一机位 → 批准离港
+          </span>
           <span>
             <i className="live-dot" />
             {state.paused ? "SIMULATION PAUSED" : "SIMULATION LIVE"}

@@ -1201,3 +1201,172 @@ footer > span:last-child {
     transition: none !important;
   }
 }
+
+/* —— 连续任务队列 —— */
+.fleet-card-wrap {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+}
+.fleet-card-wrap.chosen {
+  grid-column: 1 / -1;
+}
+.fleet-card-wrap .fleet-card {
+  width: 100%;
+}
+.queue-editor {
+  border: 1px solid #e2d8c3;
+  border-top: 0;
+  background: #fffdf6;
+  border-radius: 0 0 5px 5px;
+  padding: 10px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.queue-tag {
+  font: 600 9px "Barlow Condensed", sans-serif;
+  letter-spacing: 1px;
+  color: #b07a3f;
+  background: #f7ead5;
+  padding: 2px 7px;
+  border-radius: 9px;
+}
+.queue-current {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.queue-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 7px;
+  border: 1px solid #e6e7d9;
+  border-radius: 4px;
+  background: #faf9f1;
+}
+.queue-row.active {
+  border-color: #d7b079;
+  background: #fff6e4;
+}
+.queue-row.empty {
+  color: #9aa48f;
+  justify-content: center;
+  font-size: 9px;
+}
+.queue-row > div {
+  flex: 1;
+  min-width: 0;
+}
+.queue-row strong {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+}
+.queue-index {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e7ebdc;
+  color: #6f8069;
+  font: 600 10px "Barlow Condensed", sans-serif;
+  flex: none;
+}
+.queue-ops {
+  display: flex;
+  gap: 3px;
+  flex: none;
+}
+.queue-ops button {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #eef0e4;
+  border: 1px solid #dde2d2;
+  color: #6c7d66;
+  font-size: 10px;
+  padding: 0;
+}
+.queue-settings {
+  display: flex;
+  gap: 10px;
+}
+.queue-settings label {
+  flex: 1;
+  font-size: 9px;
+  color: #8a9582;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.queue-settings select,
+.retarget-select {
+  border: 1px solid #d8dccb;
+  border-radius: 4px;
+  background: #fdfcf5;
+  padding: 5px 6px;
+  font-size: 10px;
+  color: #44584c;
+}
+.queue-list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  color: #94a18e;
+  margin-bottom: 4px;
+}
+.link-btn {
+  background: none;
+  color: #c0653f;
+  font-size: 9px;
+  padding: 0;
+}
+.queue-empty-hint {
+  font-size: 9px;
+  color: #abb39c;
+  line-height: 1.7;
+}
+.eta {
+  font-family: monospace;
+  font-size: 8px;
+  color: #7e9382;
+  margin-top: 3px;
+  display: block;
+}
+.eta.risk {
+  color: #c2563f;
+  font-weight: 600;
+}
+.abort-text {
+  color: #c2563f;
+}
+.retarget-select {
+  flex: none;
+}
+.waiting-badge {
+  font-size: 8px;
+  fill: #d98a3d;
+  font-weight: 600;
+}
+.queue-count {
+  font: 600 10px "Barlow Condensed", sans-serif;
+  fill: #35534d;
+}
+.queue-path {
+  pointer-events: none;
+}
+.service-task.queued {
+  background: #f6f8ee;
+}
+.service-task.waiting .service-icon {
+  background: #f6e6cf;
+  color: #c07c37;
+}
+.service-task.aborted .service-icon {
+  background: #f3dcd6;
+  color: #b2543f;
+}

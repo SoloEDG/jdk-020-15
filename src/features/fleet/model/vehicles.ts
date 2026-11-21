@@ -1,5 +1,6 @@
-import type { Vehicle, ServiceKind } from "../../../shared/types";
-export const depot = { x: 850, y: 510 };
+import type { Vehicle, ServiceKind, Shift } from "../../../shared/types";
+/** 每辆车的默认等候上限（秒），0 表示无限等待 */
+export const defaultWaitCap = 45;
 export function initialVehicles(): Vehicle[] {
   const result: Vehicle[] = [];
   for (const [kind, prefix] of [
@@ -18,13 +19,13 @@ export function initialVehicles(): Vehicle[] {
         target: p,
         progress: 0,
         tripDuration: 10,
+        queue: [],
+        waitCap: defaultWaitCap,
+        skipPolicy: "rotate",
       });
     }
   return result;
 }
-export function selectVehicle(
-  state: import("../../../shared/types").Shift,
-  id: string,
-) {
+export function selectVehicle(state: Shift, id: string): Shift {
   return { ...state, selectedVehicleId: id };
 }

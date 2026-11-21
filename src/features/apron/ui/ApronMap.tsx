@@ -1,10 +1,40 @@
-import type { Shift } from "../../../shared/types";
+import type { Shift, Vehicle } from "../../../shared/types";
 import { occupiedFlight, compatibleStand } from "../lib/geometry";
+import { taskPoint } from "../../fleet/model/queue";
 import { Aircraft } from "./Aircraft";
 interface Props {
   state: Shift;
   onStand: (id: string) => void;
   onFlight: (id: string) => void;
+}
+
+/** 车辆执行目标 + 队列承诺的预览折线（在途目标与作业归属可视化，不分叉） */
+function QueuePath({ state, v }: { state: Shift; v: Vehicle }) {
+  const ids = [
+    ...(v.serviceId ? [v.serviceId] : []),
+    ...v.queue.filter((id) => id !== v.serviceId),
+  ];
+  const points = ids
+    .map((id) => {
+      const t = state.services.find((x) => x.id === id);
+      return t ? taskPoint(state, t) : undefined;
+    })
+    .filter((p): p is { x: number; y: number } => !!p);
+  if (points.length === 0) return null;
+  const d = [`M ${v.position.x} ${v.position.y}`]
+    .concat(points.map((p) => `L ${p.x} ${p.y}`))
+    .join(" ");
+  return (
+    <path
+      d={d}
+      fill="none"
+      stroke={v.status === "waiting" ? "#d98a3d" : "#5f8f86"}
+      strokeWidth="1.4"
+      strokeDasharray="6 5"
+      strokeOpacity="0.75"
+      className="queue-path"
+    />
+  );
 }
 export function ApronMap({ state, onStand, onFlight }: Props) {
   const selected = state.flights.find((f) => f.id === state.selectedFlightId);
@@ -231,6 +261,11 @@ export function ApronMap({ state, onStand, onFlight }: Props) {
           />
         ))}
         {state.vehicles.map((v) => (
+          <g key={`path-${v.id}`}>
+            <QueuePath state={state} v={v} />
+          </g>
+        ))}
+        {state.vehicles.map((v) => (
           <g
             key={v.id}
             transform={`translate(${v.position.x} ${v.position.y})`}
@@ -263,6 +298,22 @@ export function ApronMap({ state, onStand, onFlight }: Props) {
                 strokeOpacity=".5"
                 className="moving-ring"
               />
+            )}
+            {v.status === "waiting" ? (
+              <text
+                y="-12"
+                textAnchor="middle"
+                className="waiting-badge"
+                data-testid={`waiting-${v.id}`}
+              >
+                等候
+              </text>
+            ) : (
+              (v.queue.length > 0 || v.serviceId) && (
+                <text y="-12" textAnchor="middle" className="queue-count">
+                  {v.queue.length + (v.serviceId ? 1 : 0)}
+                </text>
+              )
             )}
           </g>
         ))}
